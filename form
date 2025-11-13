@@ -1,0 +1,168 @@
+import 'package:flutter/material.dart'; 
+void main() => runApp(const FormExampleApp()); 
+class FormExampleApp extends StatelessWidget { 
+const FormExampleApp({super.key}); 
+@override 
+Widget build(BuildContext context) { 
+return MaterialApp( 
+title: 'Flutter Form Example', 
+theme: ThemeData( 
+primarySwatch: Colors.deepPurple, 
+scaffoldBackgroundColor: Colors.white, 
+inputDecorationTheme: const InputDecorationTheme( 
+border: OutlineInputBorder(), 
+), 
+elevatedButtonTheme: ElevatedButtonThemeData( 
+style: ElevatedButton.styleFrom( 
+padding: const EdgeInsets.symmetric(vertical: 16), 
+textStyle: const TextStyle(fontSize: 18), 
+), 
+), 
+), 
+home: const FormScreen(), 
+); 
+}} 
+class FormScreen extends StatefulWidget { 
+const FormScreen({super.key}); 
+@override 
+State<FormScreen> createState() => _FormScreenState(); 
+} 
+class _FormScreenState extends State<FormScreen> { 
+final _formKey = GlobalKey<FormState>(); 
+final _nameController = TextEditingController(); 
+final _emailController = TextEditingController(); 
+String? _selectedCountry; 
+bool _acceptTerms = false; 
+String _gender = 'Male'; 
+final List<String> _countries = ['USA', 'Canada', 'UK', 'Australia']; 
+void _submit() { 
+if (_formKey.currentState!.validate()) { 
+     if (!_acceptTerms) { 
+       ScaffoldMessenger.of(context).showSnackBar( 
+         const SnackBar(content: Text('You must accept the terms to continue')), 
+       ); 
+       return; 
+     } 
+ // Process data 
+     ScaffoldMessenger.of(context).showSnackBar( 
+       SnackBar( 
+         content: Text( 
+           'Form Submitted!\nName: ${_nameController.text}\nEmail: 
+${_emailController.text}\nCountry: $_selectedCountry\nGender: $_gender', 
+         ), 
+         duration: const Duration(seconds: 4), 
+       ), 
+     ); 
+   } 
+ } 
+ 
+ @override 
+ void dispose() { 
+   _nameController.dispose(); 
+   _emailController.dispose(); 
+   super.dispose(); 
+ } 
+ 
+ String? _validateEmail(String? val) { 
+   if (val == null || val.isEmpty) return 'Email is required'; 
+   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+'); 
+   if (!emailRegex.hasMatch(val)) return 'Enter a valid email'; 
+   return null; 
+ } 
+ 
+ String? _validateName(String? val) { 
+   if (val == null || val.trim().isEmpty) return 'Name is required'; 
+   if (val.trim().length < 3) return 'Name must be at least 3 characters'; 
+   return null; 
+ } 
+@override 
+ Widget build(BuildContext context) { 
+   return Scaffold( 
+     appBar: AppBar(title: const Text('Flutter Form Example')), 
+     body: SingleChildScrollView( 
+       padding: const EdgeInsets.all(24), 
+       child: Form( 
+         key: _formKey, 
+         child: Column( 
+           crossAxisAlignment: CrossAxisAlignment.stretch, 
+           children: [ 
+             // Name TextField 
+             TextFormField( 
+               controller: _nameController, 
+               decoration: const InputDecoration( 
+                 labelText: 'Name', 
+                 prefixIcon: Icon(Icons.person), 
+               ), 
+               validator: _validateName, 
+             ), 
+             const SizedBox(height: 20), 
+ 
+             // Email TextField 
+             TextFormField( 
+               controller: _emailController, 
+               decoration: const InputDecoration( 
+                 labelText: 'Email', 
+                 prefixIcon: Icon(Icons.email), 
+               ), 
+               keyboardType: TextInputType.emailAddress, 
+               validator: _validateEmail, 
+             ), 
+             const SizedBox(height: 20), 
+ 
+             // Country Dropdown 
+             DropdownButtonFormField<String>( 
+               decoration: const InputDecoration( 
+                 labelText: 'Country', 
+                 prefixIcon: Icon(Icons.public), 
+               ), 
+               value: _selectedCountry, 
+               items: _countries 
+                   .map((c) => DropdownMenuItem(value: c, child: Text(c))) 
+                   .toList(), 
+               onChanged: (val) => setState(() => _selectedCountry = val), 
+               validator: (val) => val == null ? 'Please select a country' : null, 
+             ), 
+             const SizedBox(height: 20), 
+ 
+             // Gender radio buttons 
+             const Text('Gender', style: TextStyle(fontWeight: FontWeight.bold)), 
+             Row( 
+               children: [ 
+                 Expanded( 
+                   child: RadioListTile<String>( 
+                     title: const Text('Male'), 
+                     value: 'Male', 
+                     groupValue: _gender, 
+onChanged: (val) => setState(() => _gender = val!), 
+), 
+), 
+Expanded( 
+child: RadioListTile<String>( 
+title: const Text('Female'), 
+value: 'Female', 
+groupValue: _gender, 
+onChanged: (val) => setState(() => _gender = val!), 
+), 
+), 
+], 
+), 
+const SizedBox(height: 20), 
+// Accept terms checkbox 
+CheckboxListTile( 
+title: const Text('I accept the terms and conditions'), 
+value: _acceptTerms, 
+onChanged: (val) => setState(() => _acceptTerms = val ?? false), 
+), 
+const SizedBox(height: 30), 
+// Submit Button 
+ElevatedButton( 
+onPressed: _submit, 
+child: const Text('Submit'), 
+), 
+], 
+), 
+), 
+), 
+); 
+} 
+}
