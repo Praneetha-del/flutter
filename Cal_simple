@@ -1,0 +1,56 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(home: CalcApp());
+  }
+}
+
+class CalcApp extends StatefulWidget {
+  const CalcApp({super.key});
+
+  @override
+  State<CalcApp> createState() => _CalcAppState();
+}
+
+class _CalcAppState extends State<CalcApp> {
+  final n1 = TextEditingController();
+  final n2 = TextEditingController();
+  String result = '';
+
+  double v(TextEditingController c) => double.tryParse(c.text) ?? 0;
+
+  void add() => setState(() => result = 'Sum = ${v(n1) + v(n2)}');
+  void sub() => setState(() => result = 'Diff = ${v(n1) - v(n2)}');
+  void mul() => setState(() => result = 'Mul = ${v(n1) * v(n2)}');
+  void div() => setState(() => result = v(n2) == 0 ? 'Cannot divide' : 'Div = ${v(n1) / v(n2)}');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Calculator')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(controller: n1, keyboardType: TextInputType.number),
+          TextField(controller: n2, keyboardType: TextInputType.number),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(onPressed: add, child: const Text('+')),
+              ElevatedButton(onPressed: sub, child: const Text('-')),
+              ElevatedButton(onPressed: mul, child: const Text('*')),
+              ElevatedButton(onPressed: div, child: const Text('/')),
+            ],
+          ),
+          Text(result),
+        ],
+      ),
+    );
+  }
+}
