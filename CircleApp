@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: CircleAreaApp(),
+    );
+  }
+}
+
+class CircleAreaApp extends StatefulWidget {
+  @override
+  State<CircleAreaApp> createState() => _CircleAreaAppState();
+}
+
+class _CircleAreaAppState extends State<CircleAreaApp> {
+  TextEditingController radiusCtrl = TextEditingController();
+  String result = '';
+
+  double findArea(double r) {
+    return 3.14 * r * r;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Area of Circle')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: radiusCtrl,
+              decoration: InputDecoration(labelText: 'Enter radius'),
+              keyboardType: TextInputType.number,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                double r = double.tryParse(radiusCtrl.text) ?? 0;
+                setState(() {
+                  double area = findArea(r);
+                  result = 'Area = ${area.toStringAsFixed(2)}';
+                });
+              },
+              child: Text('Find Area'),
+            ),
+            SizedBox(height: 10),
+            Text(result, style: TextStyle(fontSize: 20)),
+          ],
+        ),
+      ),
+    );
+  }
+}
