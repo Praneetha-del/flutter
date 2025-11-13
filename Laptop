@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: LaptopApp(),
+    );
+  }
+}
+
+class Laptop {
+  int id;
+  String name;
+  int ram;
+
+  Laptop(this.id, this.name, this.ram);
+}
+
+class LaptopApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Create 3 laptop objects
+    Laptop l1 = Laptop(1, 'Dell', 8);
+    Laptop l2 = Laptop(2, 'HP', 16);
+    Laptop l3 = Laptop(3, 'Lenovo', 12);
+
+    // Store them in a list
+    List<Laptop> laptops = [l1, l2, l3];
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Laptop Details')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: laptops.map((lap) {
+            return Text(
+              'ID: ${lap.id}, Name: ${lap.name}, RAM: ${lap.ram}GB',
+              style: TextStyle(fontSize: 18),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
