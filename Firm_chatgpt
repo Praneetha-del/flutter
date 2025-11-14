@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: SimpleForm());
+  }
+}
+
+class SimpleForm extends StatefulWidget {
+  @override
+  State<SimpleForm> createState() => _SimpleFormState();
+}
+
+class _SimpleFormState extends State<SimpleForm> {
+  final formKey = GlobalKey<FormState>();
+  String? name;
+  String gender = "Male";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Simple Form")),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: "Enter Name"),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Please enter name" : null,
+                onSaved: (v) => name = v,
+              ),
+
+              DropdownButtonFormField(
+                value: gender,
+                items: ["Male", "Female", "Other"]
+                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                    .toList(),
+                onChanged: (v) => gender = v!,
+                decoration: InputDecoration(labelText: "Select Gender"),
+              ),
+
+              SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Name: $name | Gender: $gender")),
+                    );
+                  }
+                },
+                child: Text("Submit"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
